@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma"; // Adatta il path se necessario
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const id = Number(params.id);
+export async function GET(req: NextRequest, context: any) {
+  const param = await context.params;
+  const id = Number(param.id);
   const macro = await prisma.macroargument.findUnique({ where: { id } });
   if (!macro) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(macro);
@@ -15,8 +13,7 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const param = await params;
-  const id = Number(param.id);
+  const id = Number(params.id);
   const { name } = await req.json();
 
   try {
@@ -30,11 +27,8 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const param = await params;
+export async function DELETE(req: NextRequest, context: any) {
+  const param = await context.params;
   const id = Number(param.id);
 
   try {
