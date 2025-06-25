@@ -130,14 +130,14 @@ export function ArgumentForm({
             <div key={i} className="flex gap-2 items-center">
               <textarea
                 placeholder="Link Description"
-                className="textarea textarea-bordered flex-grow min-w-[300px]"
+                className="textarea textarea-bordered w-full"
                 value={link.description}
                 onChange={(e) =>
                   handleLinkChange(i, "description", e.target.value)
                 }
               />
               <select
-                className="select select-bordered w-48 flex-shrink-0"
+                className="select select-bordered w-48"
                 value={link.macroargumentId}
                 onChange={(e) =>
                   handleLinkChange(i, "macroargumentId", Number(e.target.value))
@@ -153,7 +153,7 @@ export function ArgumentForm({
               {links.length > 1 && (
                 <button
                   type="button"
-                  className="btn btn-error btn-sm flex-shrink-0"
+                  className="btn btn-error btn-sm"
                   onClick={() => removeLink(i)}
                 >
                   Remove
