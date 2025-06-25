@@ -124,50 +124,63 @@ export function ArgumentForm({
         </select>
 
         {/* Dynamic Links */}
-        <div className="space-y-4 mt-4">
-          <h3 className="font-semibold text-lg mb-2">Links</h3>
+        <div className="space-y-6 mt-6">
+          <h3 className="font-semibold text-lg">Links</h3>
+
           {links.map((link, i) => (
-            <div key={i} className="flex gap-2 items-center">
+            <div
+              key={i}
+              className="bg-base-200 p-4 rounded-lg space-y-2 relative"
+            >
               <textarea
                 placeholder="Link Description"
-                className="textarea textarea-bordered w-full"
+                className="textarea textarea-bordered w-full min-h-[100px]"
                 value={link.description}
                 onChange={(e) =>
                   handleLinkChange(i, "description", e.target.value)
                 }
               />
-              <select
-                className="select select-bordered w-48"
-                value={link.macroargumentId}
-                onChange={(e) =>
-                  handleLinkChange(i, "macroargumentId", Number(e.target.value))
-                }
-              >
-                <option value="">-- Select Macroargument --</option>
-                {macroarguments.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.name}
-                  </option>
-                ))}
-              </select>
-              {links.length > 1 && (
-                <button
-                  type="button"
-                  className="btn btn-error btn-sm"
-                  onClick={() => removeLink(i)}
+              <div className="flex justify-between items-center gap-2 flex-wrap">
+                <select
+                  className="select select-bordered flex-1 min-w-[200px]"
+                  value={link.macroargumentId}
+                  onChange={(e) =>
+                    handleLinkChange(
+                      i,
+                      "macroargumentId",
+                      Number(e.target.value)
+                    )
+                  }
                 >
-                  Remove
-                </button>
-              )}
+                  <option value="">-- Select Macroargument --</option>
+                  {macroarguments.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.name}
+                    </option>
+                  ))}
+                </select>
+                {links.length > 1 && (
+                  <button
+                    type="button"
+                    className="btn btn-error btn-sm"
+                    onClick={() => removeLink(i)}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
             </div>
           ))}
-          <button
-            type="button"
-            className="btn btn-secondary btn-sm mt-2"
-            onClick={addLink}
-          >
-            Add Link
-          </button>
+
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={addLink}
+            >
+              Add Link
+            </button>
+          </div>
         </div>
 
         <button type="submit" className="btn btn-primary w-full mt-6">

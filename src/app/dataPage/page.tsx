@@ -32,6 +32,10 @@ export default function DataPage() {
     null
   );
 
+  const [selectedLinkDescription, setSelectedLinkDescription] = useState<
+    string | null
+  >(null);
+
   useEffect(() => {
     fetch("/api/arguments")
       .then((res) => res.json())
@@ -141,24 +145,38 @@ export default function DataPage() {
                       return (
                         <li key={`${arg.id}-${index}`}>
                           <div className="flex items-center justify-between">
-                            <Link href={`/edit/${arg.id}`}>
+                            <Link
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setSelectedDescription(arg.description);
+                              }}
+                              className="ml-4 underline text-blue-600 hover:text-blue-800"
+                            >
                               <strong>{arg.title}</strong>
                             </Link>
-
                             <button
                               onClick={() =>
-                                setSelectedDescription(arg.description)
+                                (window.location.href = `/edit/${arg.id}`)
                               }
-                              className="ml-4 btn btn-sm btn-outline"
+                              className="btn btn-sm btn-outline"
                             >
-                              Show Description
+                              Edit
                             </button>
                           </div>
 
                           {filteredLinks.length > 0 && (
                             <ul className="list pl-6 mt-1 text-sm text-gray-600">
                               {filteredLinks.map((link) => (
-                                <li key={link.id}>{link.description}</li>
+                                <li
+                                  key={link.id}
+                                  className="cursor-pointer underline text-blue-600 hover:text-blue-800"
+                                  onClick={() =>
+                                    setSelectedLinkDescription(link.description)
+                                  }
+                                >
+                                  {link.description.split("\n")[0]}
+                                </li>
                               ))}
                             </ul>
                           )}
@@ -201,6 +219,34 @@ export default function DataPage() {
               <div className="modal-action">
                 <button
                   onClick={() => setSelectedDescription(null)}
+                  className="btn"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {selectedLinkDescription && (
+        <>
+          <input
+            type="checkbox"
+            id="link-description-modal"
+            className="modal-toggle"
+            checked
+            readOnly
+          />
+          <div className="modal modal-open">
+            <div className="modal-box max-h-[80vh] overflow-y-auto">
+              <h3 className="font-bold text-lg mb-4">Link Description</h3>
+              <div className="prose max-w-none whitespace-pre-wrap break-words">
+                <ReactMarkdown>{selectedLinkDescription}</ReactMarkdown>
+              </div>
+              <div className="modal-action">
+                <button
+                  onClick={() => setSelectedLinkDescription(null)}
                   className="btn"
                 >
                   Close

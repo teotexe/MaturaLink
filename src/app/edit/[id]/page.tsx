@@ -188,6 +188,18 @@ export default function EditArgumentPage({
     router.push("/");
   }
 
+  function handleTextareaInput(
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    index: number
+  ) {
+    const target = e.target;
+    // reset height to recalc scrollHeight
+    target.style.height = "auto";
+    target.style.height = target.scrollHeight + "px";
+
+    handleLinkChange(index, "description", target.value);
+  }
+
   if (!argument) return <div>Loading...</div>;
 
   return (
@@ -235,18 +247,26 @@ export default function EditArgumentPage({
             link.isDeleted ? null : (
               <div
                 key={link.id ?? link.tempId ?? i}
-                className="flex gap-2 items-center mb-3"
+                className="mb-6 p-4 rounded-md bg-gray-50"
               >
+                <label className="block font-semibold mb-1">
+                  Link Description
+                </label>
                 <textarea
                   placeholder="Link Description"
-                  className="textarea textarea-bordered w-full"
+                  className="textarea textarea-bordered w-full mb-3 h-24"
+                  style={{ minHeight: "300px", touchAction: "manipulation" }}
                   value={link.description}
                   onChange={(e) =>
                     handleLinkChange(i, "description", e.target.value)
                   }
                 />
+
+                <label className="block font-semibold mb-1">
+                  Macroargument
+                </label>
                 <select
-                  className="select select-bordered w-48"
+                  className="select select-bordered w-full mb-3"
                   value={link.macroargumentId}
                   onChange={(e) =>
                     handleLinkChange(i, "macroargumentId", e.target.value)
@@ -259,9 +279,10 @@ export default function EditArgumentPage({
                     </option>
                   ))}
                 </select>
+
                 <button
                   type="button"
-                  className="btn btn-error btn-sm"
+                  className="btn btn-error btn-sm w-full"
                   onClick={() => removeLink(i)}
                 >
                   Remove
@@ -269,6 +290,7 @@ export default function EditArgumentPage({
               </div>
             )
           )}
+
           <button
             type="button"
             className="btn btn-secondary btn-sm mt-2"
