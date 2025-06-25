@@ -51,6 +51,10 @@ export default function CytoscapeGraph() {
     new Map()
   );
 
+  const [selectedLinkDescription, setSelectedLinkDescription] = useState<
+    string | null
+  >(null);
+
   useEffect(() => {
     async function fetchData() {
       // Prendo prima i soggetti con i colori
@@ -128,7 +132,7 @@ export default function CytoscapeGraph() {
                 source: argId,
                 target: macroId,
                 description: link.description,
-                label: link.description,
+                label: link.description.split("\n")[0],
               },
             });
           }
@@ -202,7 +206,7 @@ export default function CytoscapeGraph() {
         layout: {
           name: "fcose",
           idealEdgeLength: (edge: cytoscape.EdgeSingular) => {
-            const desc = edge.data("description") || "";
+            const desc = edge.data("description").split("\n")[0] || "";
             return desc.length * 8;
           },
         } as any,
@@ -215,6 +219,14 @@ export default function CytoscapeGraph() {
           label: node.data("label"),
           description: node.data("description"),
         });
+      });
+
+      cyRef.current.on("tap", "edge", (event) => {
+        const edge = event.target;
+        const fullDesc = edge.data("description");
+        if (fullDesc) {
+          setSelectedLinkDescription(fullDesc);
+        }
       });
     }
 
@@ -258,7 +270,7 @@ export default function CytoscapeGraph() {
         checked={selectedNode !== null}
         readOnly
       />
-      import ReactMarkdown from "react-markdown";
+
       <div className="modal">
         <div className="modal-box max-h-[80vh] overflow-y-auto">
           <h3 className="font-bold text-lg mb-4">{selectedNode?.label}</h3>
@@ -296,6 +308,36 @@ export default function CytoscapeGraph() {
           </div>
         </div>
       </div>
+
+      {selectedLinkDescription && (
+        <>
+          <input
+            type="checkbox"
+            id="link-modal"
+            className="modal-toggle"
+            checked
+            readOnly
+          />
+          <div className="modal modal-open">
+            <div className="modal-box max-h-[80vh] overflow-y-auto">
+              <h3 className="font-bold text-lg mb-4">
+                Descrizione del collegamento
+              </h3>
+              <div className="prose max-w-none whitespace-pre-wrap break-words">
+                <ReactMarkdown>{selectedLinkDescription}</ReactMarkdown>
+              </div>
+              <div className="modal-action">
+                <button
+                  className="btn"
+                  onClick={() => setSelectedLinkDescription(null)}
+                >
+                  Chiudi
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }
