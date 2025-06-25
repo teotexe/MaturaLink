@@ -9,11 +9,9 @@ export async function GET(req: NextRequest, context: any) {
   return NextResponse.json(macro);
 }
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const id = Number(params.id);
+export async function PUT(req: NextRequest, context: any) {
+  const param = await context.params;
+  const id = Number(param.id);
   const { name } = await req.json();
 
   try {
