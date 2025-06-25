@@ -25,10 +25,13 @@ export async function PUT(req: NextRequest, context: any) {
   return NextResponse.json(updatedArgument);
 }
 
-export async function GET(req: NextRequest, context: any) {
-  const id = Number(context.params.id);
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
   const argument = await prisma.argumentElement.findUnique({
-    where: { id },
+    where: { id: Number(id) },
     include: {
       subject: true,
       links: { include: { macroargument: true } },
