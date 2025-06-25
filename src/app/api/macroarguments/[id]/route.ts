@@ -15,7 +15,8 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const id = Number(params.id);
+  const param = await params;
+  const id = Number(param.id);
   const { name } = await req.json();
 
   try {
@@ -33,7 +34,8 @@ export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const id = Number(params.id);
+  const param = await params;
+  const id = Number(param.id);
 
   try {
     // Scollega i LinkElement impostando macroargumentId a null

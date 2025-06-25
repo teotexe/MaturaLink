@@ -1,8 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(req: NextRequest, context: any) {
-  const id = Number(context.params.id);
+export async function PUT(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
+  const param = await context.params;
+  const id = Number(param.id);
   const data = await req.json();
 
   if (!data.description || !data.macroargumentId || !data.argumentId) {
@@ -34,8 +38,12 @@ export async function PUT(req: NextRequest, context: any) {
   }
 }
 
-export async function DELETE(req: NextRequest, context: any) {
-  const id = Number(context.params.id);
+export async function DELETE(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
+  const param = await context.params;
+  const id = Number(param.id);
 
   try {
     await prisma.linkElement.delete({

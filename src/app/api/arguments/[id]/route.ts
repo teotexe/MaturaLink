@@ -5,7 +5,8 @@ export async function PUT(
   req: NextRequest,
   context: { params: { id: string } }
 ) {
-  const id = Number(context.params.id);
+  const param = await context.params;
+  const id = Number(param.id);
   const data = await req.json();
 
   const updatedArgument = await prisma.argumentElement.update({
@@ -32,7 +33,8 @@ export async function GET(
   req: NextRequest,
   context: { params: { id: string } }
 ) {
-  const { id } = context.params;
+  const param = await context.params;
+  const { id } = param;
 
   const argument = await prisma.argumentElement.findUnique({
     where: { id: Number(id) },
@@ -53,7 +55,8 @@ export async function DELETE(
   req: NextRequest,
   context: { params: { id: string } }
 ) {
-  const id = Number(context.params.id);
+  const param = await context.params;
+  const id = Number(param.id);
 
   try {
     // Delete related links first
