@@ -1,11 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const id = Number(params.id);
+export async function GET(req: NextRequest, context: any) {
+  const param = await context.params;
+  const id = Number(param.id);
   if (isNaN(id)) {
     return NextResponse.json({ error: "Invalid subject id" }, { status: 400 });
   }
@@ -21,11 +19,9 @@ export async function GET(
   return NextResponse.json(subject);
 }
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const id = Number(params.id);
+export async function PATCH(request: NextRequest, context: any) {
+  const param = await context.params;
+  const id = Number(param.id);
   if (isNaN(id)) {
     return NextResponse.json({ error: "Invalid subject id" }, { status: 400 });
   }
