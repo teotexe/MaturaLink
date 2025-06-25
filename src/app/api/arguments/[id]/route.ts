@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } }
+  context: Readonly<{ params: Readonly<{ id: string }> }>
 ) {
   const param = await context.params;
   const id = Number(param.id);
@@ -31,7 +31,7 @@ export async function PUT(
 
 export async function GET(
   req: NextRequest,
-  context: { params: { id: string } }
+  context: Readonly<{ params: Readonly<{ id: string }> }>
 ) {
   const param = await context.params;
   const { id } = param;
@@ -53,7 +53,7 @@ export async function GET(
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  context: Readonly<{ params: Readonly<{ id: string }> }>
 ) {
   const param = await context.params;
   const id = Number(param.id);
