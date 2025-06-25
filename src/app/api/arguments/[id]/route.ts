@@ -1,7 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PUT(req: NextRequest, context: any) {
+export async function PUT(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
   const id = Number(context.params.id);
   const data = await req.json();
 
@@ -26,10 +29,11 @@ export async function PUT(req: NextRequest, context: any) {
 }
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: { id: string } }
 ) {
-  const { id } = params;
+  const { id } = context.params;
+
   const argument = await prisma.argumentElement.findUnique({
     where: { id: Number(id) },
     include: {
@@ -45,11 +49,14 @@ export async function GET(
   return NextResponse.json(argument);
 }
 
-export async function DELETE(req: NextRequest, context: any) {
+export async function DELETE(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
   const id = Number(context.params.id);
 
   try {
-    // Delete all links related to this argument first (optional if cascading deletes configured)
+    // Delete related links first
     await prisma.linkElement.deleteMany({
       where: { argumentId: id },
     });
