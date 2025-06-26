@@ -22,6 +22,16 @@ export async function GET() {
           macroargument: true,
         },
       },
+      fromArgumentLinks: {
+        include: {
+          toArgument: true,
+        },
+      },
+      toArgumentLinks: {
+        include: {
+          fromArgument: true,
+        },
+      },
     },
   });
 

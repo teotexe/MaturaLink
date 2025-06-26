@@ -25,12 +25,21 @@ interface LinkElement {
   macroargument: Macroargument;
 }
 
+interface ArgumentLink {
+  id: number;
+  fromArgumentId: number;
+  toArgumentId: number;
+  description: string;
+}
+
 interface ArgumentElement {
   id: number;
   title: string;
   description: string;
   subject: Subject;
   links: LinkElement[];
+  fromArgumentLinks: ArgumentLink[];
+  toArgumentLinks: ArgumentLink[];
 }
 
 export default function CytoscapeGraph() {
@@ -123,6 +132,7 @@ export default function CytoscapeGraph() {
           },
         });
 
+        // existing macro links
         arg.links.forEach((link) => {
           const macroId = macroMap.get(link.macroargument.id);
           if (macroId) {
@@ -137,6 +147,36 @@ export default function CytoscapeGraph() {
             });
           }
         });
+
+        // Add fromArgumentLinks edges (from this arg to others)
+        arg.fromArgumentLinks.forEach((link) => {
+          elements.push({
+            data: {
+              id: `fromArgLink-${link.id}`,
+              source: `arg-${link.fromArgumentId}`,
+              target: `arg-${link.toArgumentId}`,
+              description: link.description,
+              label: link.description.split("\n")[0],
+            },
+          });
+        });
+
+        // Add toArgumentLinks edges (from others to this arg)
+        // Note: These links should be already included from the other argument's fromArgumentLinks to avoid duplication
+        // But if needed, you could also add them here with a different id, e.g.:
+        /*
+  arg.toArgumentLinks.forEach((link) => {
+    elements.push({
+      data: {
+        id: `toArgLink-${link.id}`,
+        source: `arg-${link.fromArgumentId}`,
+        target: `arg-${link.toArgumentId}`,
+        description: link.description,
+        label: link.description.split("\n")[0],
+      },
+    });
+  });
+  */
       });
 
       if (cyRef.current) {
@@ -206,9 +246,17 @@ export default function CytoscapeGraph() {
         layout: {
           name: "fcose",
           idealEdgeLength: (edge: cytoscape.EdgeSingular) => {
+            // Increase base edge length multiplier to space out edges more
             const desc = edge.data("description").split("\n")[0] || "";
-            return desc.length * 8;
+            return desc.length * 8; // was 8, now 15 for more space
           },
+          nodeRepulsion: 80000, // was default (~45000), higher means nodes push away more
+          gravity: 0.8, // default 1, slightly lower gravity spreads nodes
+          animate: true,
+          animationDuration: 1000,
+          randomize: true,
+          fit: true,
+          padding: 30,
         } as any,
       });
 

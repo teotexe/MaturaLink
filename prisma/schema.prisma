@@ -8,32 +8,46 @@ datasource db {
 }
 
 model Subject {
-  id    Int    @id @default(autoincrement())
-  name  String @unique
+  id        Int               @id @default(autoincrement())
+  name      String            @unique
   color     String?
   arguments ArgumentElement[]
 }
 
 model Macroargument {
-  id      Int     @id @default(autoincrement())
-  name    String  @unique
+  id      Int           @id @default(autoincrement())
+  name    String        @unique
   links   LinkElement[]
 }
 
 model ArgumentElement {
-  id          Int     @id @default(autoincrement())
-  title       String
-  description String
-  subject     Subject @relation(fields: [subjectId], references: [id])
-  subjectId   Int
-  links       LinkElement[]
+  id                  Int              @id @default(autoincrement())
+  title               String
+  description         String
+  subject             Subject          @relation(fields: [subjectId], references: [id])
+  subjectId           Int
+  links               LinkElement[]
+
+  fromArgumentLinks   ArgumentLink[]   @relation("FromArgument")
+  toArgumentLinks     ArgumentLink[]   @relation("ToArgument")
 }
 
 model LinkElement {
+  id              Int              @id @default(autoincrement())
+  description     String
+  argument        ArgumentElement  @relation(fields: [argumentId], references: [id])
+  argumentId      Int
+  macroargument   Macroargument?   @relation(fields: [macroargumentId], references: [id])
+  macroargumentId Int?
+}
+
+model ArgumentLink {
   id             Int              @id @default(autoincrement())
   description    String
-  argument       ArgumentElement  @relation(fields: [argumentId], references: [id])
-  argumentId     Int
-  macroargument  Macroargument?    @relation(fields: [macroargumentId], references: [id])
-  macroargumentId Int?
+
+  fromArgument   ArgumentElement  @relation("FromArgument", fields: [fromArgumentId], references: [id])
+  fromArgumentId Int
+
+  toArgument     ArgumentElement  @relation("ToArgument", fields: [toArgumentId], references: [id])
+  toArgumentId   Int
 }
