@@ -2,11 +2,11 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import cytoscape from "cytoscape";
 import ReactMarkdown from "react-markdown";
-import fcose from "cytoscape-fcose";
+import cytoscape from "cytoscape";
+import coseBilkent from "cytoscape-cose-bilkent";
 
-cytoscape.use(fcose);
+cytoscape.use(coseBilkent);
 
 interface Subject {
   id: number;
@@ -63,6 +63,8 @@ export default function CytoscapeGraph() {
   const [selectedLinkDescription, setSelectedLinkDescription] = useState<
     string | null
   >(null);
+
+  const [legendOpen, setLegendOpen] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -202,7 +204,7 @@ export default function CytoscapeGraph() {
                 const subjectId = ele.data("subjectId") as number;
                 return colorMap.get(subjectId) || "#999999";
               },
-              "font-size": "12px",
+              "font-size": "10px",
               width: 40,
               height: 40,
             },
@@ -216,7 +218,7 @@ export default function CytoscapeGraph() {
               color: "#fff",
               "text-outline-width": 2,
               "text-outline-color": "#0070f3",
-              "font-size": "14px",
+              "font-size": "10px",
               width: (ele: cytoscape.NodeSingular) => {
                 const count = ele.data("connectionCount") || 1;
                 return Math.min(120, 40 + count * 10); // limite massimo
@@ -235,28 +237,17 @@ export default function CytoscapeGraph() {
               "line-color": "#ccc",
               "target-arrow-color": "#ccc",
               label: "data(label)",
-              "font-size": "12px",
+              "font-size": "6px",
               "text-rotation": "autorotate",
               "text-margin-y": -10,
-              "font-weight": "bold",
               color: "#000",
             },
           },
         ],
         layout: {
-          name: "fcose",
-          idealEdgeLength: (edge: cytoscape.EdgeSingular) => {
-            // Increase base edge length multiplier to space out edges more
-            const desc = edge.data("description").split("\n")[0] || "";
-            return desc.length * 8; // was 8, now 15 for more space
-          },
-          nodeRepulsion: 80000, // was default (~45000), higher means nodes push away more
-          gravity: 0.8, // default 1, slightly lower gravity spreads nodes
-          animate: true,
-          animationDuration: 1000,
-          randomize: true,
+          name: "cose-bilkent",
+          idealEdgeLenght: 250,
           fit: true,
-          padding: 30,
         } as any,
       });
 
@@ -294,23 +285,29 @@ export default function CytoscapeGraph() {
         ref={containerRef}
         style={{ width: "100vw", height: "100vh", position: "relative" }}
       />
-      <div
-        className="bg-white bg-opacity-90 p-4 rounded shadow-md fixed top-4 left-4 z-50 max-w-xs"
-        style={{ fontSize: "14px" }}
-      >
-        <h4 className="font-bold mb-2">Legenda</h4>
-        <ul>
-          {subjects.map((subject) => (
-            <li key={subject.id} className="flex items-center mb-1">
-              <span
-                className="inline-block w-4 h-4 mr-2 rounded"
-                style={{ backgroundColor: subject.color || "#999999" }}
-              />
-              {subject.name}
-            </li>
-          ))}
-        </ul>
+      <div className="fixed top-4 left-4 z-50 max-w-xs">
+        <div
+          tabIndex={0}
+          className="collapse collapse-arrow border border-base-300 bg-white bg-opacity-90 rounded-box"
+        >
+          <input type="checkbox" className="peer" />
+          <div className="collapse-title text-lg font-bold">Legenda</div>
+          <div className="collapse-content">
+            <ul className="mt-2">
+              {subjects.map((subject) => (
+                <li key={subject.id} className="flex items-center mb-1">
+                  <span
+                    className="inline-block w-4 h-4 mr-2 rounded"
+                    style={{ backgroundColor: subject.color || "#999999" }}
+                  />
+                  {subject.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
+
       <input
         type="checkbox"
         id="modal-toggle"
