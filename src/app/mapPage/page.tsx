@@ -246,8 +246,22 @@ export default function CytoscapeGraph() {
         ],
         layout: {
           name: "cose-bilkent",
-          idealEdgeLenght: 250,
+          quality: "proof",
+          randomize: false,
+          edgeElasticity: 0.2, // ↑ Slightly more spring, less tight clustering
+          nodeRepulsion: 20000, // ↑ Stronger repulsion = more node spacing
+          nodeDimensionsIncludeLabels: true,
+          gravity: 0.8, // ↓ Lower gravity reduces overall pull together
+          gravityRange: 3.5, // Optional fine-tuning
+          nestingFactor: 1.0,
+          numIter: 4000,
+          tile: true,
           fit: true,
+          padding: 60, // ↑ Extra padding around the layout
+          animate: false,
+          tilingPaddingVertical: 30, // ↑ More padding between tiled components
+          tilingPaddingHorizontal: 30,
+          initialEnergyOnIncremental: 0.8,
         } as any,
       });
 
